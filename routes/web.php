@@ -50,3 +50,50 @@ Route::post('/', function (Request $request) {
 
     return 'По-видимому неподдерживаемый тип файла';
 });
+
+Route::get('table', function(){
+    return view('table');
+});
+
+Route::post('table', function(Request $request) {
+    $rowsCount = 200;
+
+    $page = $request->page ? $request->page : 1;
+    $limit = $request->rows;
+    $offset = ($page - 1) * $limit;
+
+    $data = [];
+    for ($i = 1; $i <= $rowsCount; $i++) {
+        $data[] = ['id' => $i, 'name' => 'Name ' . $i, 'price' => 'Price ' . $i];
+    }
+
+    $data = array_slice($data, $offset, $limit);
+
+    return $data;
+    return ["page" => $page, "total" => 20, "records" => $rowsCount,"rows" => $data];
+});
+
+Route::get('jqgrid', function(){
+    return view('jqgrid');
+});
+
+Route::post('jqgrid', function(Request $request) {
+    $rowsCount = 200;
+
+    $page = $request->page ? $request->page : 1;
+    $limit = $request->rows;
+    $offset = ($page - 1) * $limit;
+
+    $data = [];
+    for ($i = 1; $i <= $rowsCount; $i++) {
+        $data[] = ['id' => $i, 'name' => 'Name ' . $i, 'price' => 'Price ' . $i];
+    }
+
+    $data = array_slice($data, $offset, $limit);
+
+    return ["page" => $page, "total" => 20, "records" => $rowsCount,"rows" => $data];
+});
+
+Route::get('tablesorter', function(){
+    return view('tablesorter');
+});
