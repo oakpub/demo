@@ -27,11 +27,16 @@
         }
     });
 
-    $('#table').bootstrapTable({
+    var table = $('#table');
+
+    table.bootstrapTable({
         url: '/demo/table',
         method:"POST",
-        filterControl: true,
+        //filterControl: true,
         pagination: true,
+        //pageSize: 10,
+        //pageList: [10, 25, 50, 100, 200],
+        sidePagination: 'server',
         columns: [{
             field: 'id',
             title: 'Item ID',
@@ -56,21 +61,25 @@
             name: 'Item 2',
             price: '$2'
         }]*/
-    })
+    });
 
-    /*$.ajax({
-        url: '/demo/table',
-        type: 'post',
-        dataType: 'json',
-        success: function(data) {
-            $('#table').bootstrapTable({
-                data: data
-            });
-        },
-        error: function(e) {
-            console.log(e.responseText);
-        }
-    });*/
+    //update_table(1, null);
+
+    function update_table(page, filters) {
+        $.ajax({
+            url: '/demo/table',
+            data: {page: page, filters: filters},
+            type: 'post',
+            dataType: 'json',
+            success: function(data) {
+                table.bootstrapTable('load', data);
+            },
+            error: function(e) {
+                console.log(e.responseText);
+            }
+        });
+    }
+
 </script>
 </body>
 </html>

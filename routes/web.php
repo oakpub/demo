@@ -61,7 +61,9 @@ Route::post('table', function(Request $request) {
         $data[] = ['id' => $i, 'name' => 'Name ' . $i, 'price' => 'Price ' . $i];
     }
 
-    return $data;
+    $data = array_slice($data, 0, 10);
+
+    return ['total' => 200, 'page' => 1, 'rows' => $data];
 });
 
 Route::get('jqgrid', function(){
