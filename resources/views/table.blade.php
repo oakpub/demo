@@ -27,12 +27,15 @@
         }
     });
 
-    var table = $('#table');
+    var table = $('#table'),
+        filter_data = JSON.parse('{!! $data !!}');
+
+    var filter_data_price = filter_data.price;
 
     table.bootstrapTable({
-        url: '/demo/table',
-        method:"POST",
-        //filterControl: true,
+        url: '/demo/table_data',
+        //method:"POST",
+        filterControl: true,
         pagination: true,
         //pageSize: 10,
         //pageList: [10, 25, 50, 100, 200],
@@ -51,21 +54,13 @@
             title: 'Item Price',
             sortable: true,
             filterControl: 'select',
+            filterData: 'var:filter_data_price',
         }],
-        /*data: [{
-            id: 1,
-            name: 'Item 1',
-            price: '$1'
-        }, {
-            id: 2,
-            name: 'Item 2',
-            price: '$2'
-        }]*/
     });
 
     //update_table(1, null);
 
-    function update_table(page, filters) {
+    /*function update_table(page, filters) {
         $.ajax({
             url: '/demo/table',
             data: {page: page, filters: filters},
@@ -78,7 +73,7 @@
                 console.log(e.responseText);
             }
         });
-    }
+    }*/
 
 </script>
 </body>

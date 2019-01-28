@@ -52,19 +52,60 @@ Route::post('/', function (Request $request) {
 });
 
 Route::get('table', function(){
-    return view('table');
+    //даннные для фильтров
+    $totalRecords = 2000;
+    $data = [];
+    for ($i = 1; $i <= $totalRecords; $i++) {
+        //$data['id'][$i] = $i;
+        //$data['name']['Name ' . $i] = 'Name ' . $i;
+        $data['price']['Price ' . $i] = 'Price ' . $i;
+    }
+
+    return view('table', ['data' => json_encode($data)]);
 });
 
-Route::post('table', function(Request $request) {
+Route::get('table_data', function(Request $request) {
+    $offset = intval($request->offset);
+    $limit = intval($request->limit);
+    $sort = $request->sort;
+    $order = $request->order;
+    $filter = $request->filter;
+    $totalRecords = 200000;
+
     $data = [];
-    for ($i = 1; $i <= 200; $i++) {
+    for ($i = 1; $i <= $totalRecords; $i++) {
         $data[] = ['id' => $i, 'name' => 'Name ' . $i, 'price' => 'Price ' . $i];
     }
 
-    $data = array_slice($data, 0, 10);
+    if ($filter) {
+        $filter = json_decode($filter, true);
 
-    return ['total' => 200, 'page' => 1, 'rows' => $data];
+        foreach ($filter as $field => $value) {\Illuminate\Support\Facades\Log::debug($field . ' => ' . $value);
+            $data = array_filter($data, function($a) use ($field, $value) {
+                return strpos($a[$field], $value) !== false;
+            });
+        }
+    }
+
+    if ($sort) {
+        uasort($data, function($a, $b) use ($sort, $order) {
+            if ($a[$sort] == $b[$sort]) {
+                return 0;
+            }
+            if ($order == 'desc') $result = ($a[$sort] > $b[$sort]) ? -1 : 1;
+            else $result = ($a[$sort] < $b[$sort]) ? -1 : 1;
+
+            return $result;
+        });
+    }
+
+    $paginationTotal = count($data);
+
+    $data = array_slice($data, $offset, $limit);
+
+    return ['total' => $paginationTotal, 'page' => 1, 'rows' => $data];
 });
+
 
 Route::get('jqgrid', function(){
     return view('jqgrid');
